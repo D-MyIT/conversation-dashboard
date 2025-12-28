@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Conversation & Character Dashboard</title>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --border: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #2563eb;
+      --accent-hover: #3b82f6;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    header, main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    header p {
+      color: var(--muted);
+      max-width: 820px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    input, select {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    input::placeholder { color: var(--muted); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      transition: transform .15s ease, border-color .15s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+
+    .badge {
+      font-size: 12px;
+      text-transform: capitalize;
+      background: rgba(37, 99, 235, .15);
+      color: #bfdbfe;
+      padding: 4px 8px;
+      border-radius: 999px;
+      width: fit-content;
+      margin-bottom: 8px;
+    }
+
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0 0 12px;
+    }
+
+    .card a {
+      margin-top: auto;
+      text-decoration: none;
+      background: var(--accent);
+      color: white;
+      text-align: center;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .card a:hover {
+      background: var(--accent-hover);
+    }
+
+    footer {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer strong { color: var(--text); }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Conversation & Character Dashboard</h1>
+  <p>
+    Free, high-signal content designed to help you think clearly, speak better,
+    build discipline, and become more interesting to talk to.
+    No subscriptions. No feeds. No noise.
+  </p>
+
+  <div class="controls">
+    <input id="search" type="search" placeholder="Search psychology, habits, conversation…" />
+    <select id="filter">
+      <option value="all">All categories</option>
+      <option value="conversation">Conversation fuel</option>
+      <option value="social">Social intelligence</option>
+      <option value="masculinity">Masculine character</option>
+      <option value="psychology">Psychology & human nature</option>
+      <option value="habits">Habits & discipline</option>
+      <option value="ideas">Ideas worth quoting</option>
+    </select>
+  </div>
+</header>
+
+<main>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+  <strong>Use intentionally:</strong> Pick one item. Spend 10–20 minutes.
+  Extract one idea you could bring into a real conversation today.
+</footer>
+
+<script>
+const resources = [
+  {
+    name: "The Marginalian",
+    category: "ideas",
+    desc: "Deep essays on meaning, love, creativity, science, and moral character.",
+    link: "https://www.themarginalian.org/"
+  },
+  {
+    name: "Aeon",
+    category: "ideas",
+    desc: "Thoughtful essays on philosophy, psychology, culture, and ethics.",
+    link: "https://aeon.co/"
+  },
+  {
+    name: "Wait But Why",
+    category: "ideas",
+    desc: "Humorous deep dives into human behavior and modern life.",
+    link: "https://waitbutwhy.com/"
+  },
+  {
+    name: "Farnam Street",
+    category: "habits",
+    desc: "Mental models, discipline, judgment, and better long-term thinking.",
+    link: "https://fs.blog/"
+  },
+  {
+    name: "Art of Manliness",
+    category: "masculinity",
+    desc: "Respectful guidance on confidence, responsibility, resilience, and purpose.",
+    link: "https://www.artofmanliness.com/"
+  },
+  {
+    name: "The School of Life",
+    category: "social",
+    desc: "Emotional intelligence, relationships, and self-knowledge.",
+    link: "https://www.youtube.com/@TheSchoolOfLife"
+  },
+  {
+    name: "Charisma on Command",
+    category: "conversation",
+    desc: "Communication skills, presence, and confidence without manipulation.",
+    link: "https://www.youtube.com/@CharismaonCommand"
+  },
+  {
+    name: "Big Think",
+    category: "psychology",
+    desc: "Idea-dense insights from psychologists, philosophers, and scientists.",
+    link: "https://www.bigthink.com/"
+  },
+  {
+    name: "James Clear – Articles",
+    category: "habits",
+    desc: "Clear frameworks for building good habits and breaking bad ones.",
+    link: "https://jamesclear.com/articles"
+  },
+  {
+    name: "TED Talks",
+    category: "conversation",
+    desc: "High-signal talks that provide instant discussion material.",
+    link: "https://www.ted.com/talks"
+  }
+];
+
+const grid = document.getElementById("grid");
+const search = document.getElementById("search");
+const filter = document.getElementById("filter");
+
+function render() {
+  grid.innerHTML = "";
+  const query = search.value.toLowerCase();
+
+  resources
+    .filter(r =>
+      (filter.value === "all" || r.category === filter.value) &&
+      (r.name + r.desc).toLowerCase().includes(query)
+    )
+    .forEach(r => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <span class="badge">${r.category}</span>
+        <h3>${r.name}</h3>
+        <p>${r.desc}</p>
+        <a href="${r.link}" target="_blank" rel="noopener">Open</a>
+      `;
+      grid.appendChild(card);
+    });
+}
+
+search.addEventListener("input", render);
+filter.addEventListener("change", render);
+render();
+</script>
+
+</body>
+</html>
